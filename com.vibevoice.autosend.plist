@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  VibeVoice — MIT
+  LaunchAgent template for the VibeVoice auto-send daemon.
+
+  Replace __HOME__ with the absolute path to your home directory
+  (e.g. /Users/yourname) before installing. See README "Auto-send".
+
+  The daemon needs Accessibility permission (it reads global keystrokes via
+  pynput and simulates Return). Grant it to the app that launches it.
+
+  Install:
+    cp com.vibevoice.autosend.plist ~/Library/LaunchAgents/
+    # edit the copy and replace __HOME__
+    launchctl load ~/Library/LaunchAgents/com.vibevoice.autosend.plist
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.vibevoice.autosend</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>__PYTHON__</string>
+        <string>__HOME__/projects/vibevoice/autosend.py</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Crash-restart only (see the pill's plist for the full reasoning): a
+         Ctrl+C or a clean exit must stay dead. A missing pynput still exits 2,
+         so the "relaunches the corpse" case the README warns about keeps its
+         restart — that one IS a failure. -->
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>__HOME__/.vibevoice/autosend.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>__HOME__/.vibevoice/autosend.err</string>
+</dict>
+</plist>

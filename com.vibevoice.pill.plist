@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  VibeVoice — MIT
+  LaunchAgent template for the VibeVoice pill (Dynamic Island UI).
+
+  Replace __HOME__ with the absolute path to your home directory
+  (e.g. /Users/yourname) before installing. See README "Auto-start".
+
+  Install:
+    cp com.vibevoice.pill.plist ~/Library/LaunchAgents/
+    # edit the copy and replace __HOME__
+    launchctl load ~/Library/LaunchAgents/com.vibevoice.pill.plist
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.vibevoice.pill</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>__PYTHON__</string>
+        <string>__HOME__/projects/vibevoice/vibevoice.py</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Restart on a CRASH, not on a deliberate quit. Plain `KeepAlive: true`
+         relaunches the pill whatever the exit code, which makes the menu's
+         "Quit (close everything)" a lie: NSApp.terminate_ exits 0, launchd
+         brings it straight back, and with VIBEVOICE_ENGINE_AUTOSTART=1 the
+         engine comes back with it. The user has no way to stop the app from
+         inside the app — the only cure is `launchctl bootout`, which nobody
+         should need to know. SuccessfulExit=false keeps the crash-restart
+         (exit != 0) and lets a clean quit stay quit. -->
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>__HOME__/.vibevoice/pill.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>__HOME__/.vibevoice/pill.err</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <!-- All-in-one: the pill spawns engine.py itself, inside its own GUI/TCC
+             context where the microphone permission resolves. Loading THIS one
+             agent brings up the full capture -> transcribe -> paste stack — no
+             separate engine LaunchAgent needed. Set to 0 (or remove this key) to
+             keep the engine off until you flip the menu-bar toggle. -->
+        <key>VIBEVOICE_ENGINE_AUTOSTART</key>
+        <string>1</string>
+        <key>VIBEVOICE_LANG</key>
+        <string>en</string>
+        <key>VIBEVOICE_AUTOSEND</key>
+        <string>1</string>
+        <key>VIBEVOICE_AUTOSEND_RETURN</key>
+        <string>1</string>
+    </dict>
+</dict>
+</plist>

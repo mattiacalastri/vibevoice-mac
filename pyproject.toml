@@ -1,0 +1,20 @@
+# Tooling config for VibeVoice. This is a macOS app, not a distributable
+# package — there is no [build-system]/[project] section on purpose. This file
+# pins the lint + test toolchain that AGENTS.md and CI rely on.
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+# Ruff's default rule set (pyflakes + a curated pycodestyle subset). E501
+# (line-too-long) is intentionally NOT enabled: the AppKit drawing code in
+# vibevoice.py uses long, readable Cocoa calls that wrapping would only obscure.
+select = ["E4", "E7", "E9", "F"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+# The engine/pill/autosend modules live at the repo root (flat layout, not a
+# package). Put the root on sys.path so `import engine` resolves under a bare
+# `pytest` invocation — not just `python -m pytest`, which adds the CWD itself.
+pythonpath = ["."]

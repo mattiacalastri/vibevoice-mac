@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 440" font-family="ui-monospace,SFMono-Regular,Menlo,monospace">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#1fff52"/>
+    </marker>
+    <marker id="arrowDim" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#5a7a5f"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="780" height="440" rx="16" fill="#0a0e0a"/>
+  <text x="32" y="42" fill="#1fff52" font-size="20" font-weight="bold">VibeVoice — system data flow</text>
+  <text x="32" y="66" fill="#5a7a5f" font-size="13">Three decoupled processes. They share no imports — only files under ~/.vibevoice/</text>
+
+  <!-- mic -->
+  <text x="92" y="118" fill="#cfeccf" font-size="26" text-anchor="middle">🎤</text>
+  <text x="92" y="138" fill="#5a7a5f" font-size="11" text-anchor="middle">microphone</text>
+  <line x1="92" y1="146" x2="92" y2="178" stroke="#1fff52" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- engine.py -->
+  <rect x="22" y="182" width="180" height="118" rx="12" fill="#0f1a10" stroke="#1fff52" stroke-width="1.5"/>
+  <text x="112" y="214" fill="#1fff52" font-size="16" font-weight="bold" text-anchor="middle">engine.py</text>
+  <text x="112" y="238" fill="#9fd3a4" font-size="11" text-anchor="middle">capture · energy-VAD</text>
+  <text x="112" y="256" fill="#9fd3a4" font-size="11" text-anchor="middle">whisper-turbo (MLX)</text>
+  <text x="112" y="274" fill="#9fd3a4" font-size="11" text-anchor="middle">paste into frontmost</text>
+  <text x="112" y="292" fill="#5a7a5f" font-size="10" text-anchor="middle">sole WRITER of state</text>
+
+  <!-- state dir -->
+  <rect x="300" y="170" width="180" height="142" rx="12" fill="#0d130d" stroke="#5a7a5f" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="390" y="194" fill="#cfeccf" font-size="13" font-weight="bold" text-anchor="middle">~/.vibevoice/</text>
+  <rect x="316" y="206" width="148" height="26" rx="6" fill="#101a11"/>
+  <text x="390" y="223" fill="#1fff52" font-size="12" text-anchor="middle">state</text>
+  <rect x="316" y="238" width="148" height="26" rx="6" fill="#101a11"/>
+  <text x="390" y="255" fill="#1fff52" font-size="12" text-anchor="middle">levels.bin · 60×f32</text>
+  <rect x="316" y="270" width="148" height="26" rx="6" fill="#101a11"/>
+  <text x="390" y="287" fill="#1fff52" font-size="12" text-anchor="middle">raw.txt</text>
+
+  <!-- pill -->
+  <rect x="578" y="182" width="180" height="118" rx="12" fill="#0f1a10" stroke="#1fff52" stroke-width="1.5"/>
+  <text x="668" y="214" fill="#1fff52" font-size="16" font-weight="bold" text-anchor="middle">vibevoice.py</text>
+  <text x="668" y="238" fill="#9fd3a4" font-size="11" text-anchor="middle">Dynamic Island pill</text>
+  <text x="668" y="256" fill="#9fd3a4" font-size="11" text-anchor="middle">Matrix waveform</text>
+  <text x="668" y="274" fill="#9fd3a4" font-size="11" text-anchor="middle">menu-bar 🎙 switch</text>
+  <text x="668" y="292" fill="#5a7a5f" font-size="10" text-anchor="middle">READER only</text>
+
+  <!-- engine -> files (writes) -->
+  <line x1="202" y1="241" x2="298" y2="241" stroke="#1fff52" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="250" y="232" fill="#1fff52" font-size="11" text-anchor="middle">writes</text>
+
+  <!-- files -> pill (reads) -->
+  <line x1="482" y1="241" x2="576" y2="241" stroke="#1fff52" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="529" y="232" fill="#1fff52" font-size="11" text-anchor="middle">reads</text>
+
+  <!-- pill -> notch -->
+  <text x="668" y="332" fill="#cfeccf" font-size="12" text-anchor="middle">▼ draws under the notch 📺</text>
+
+  <!-- engine -> paste -->
+  <line x1="112" y1="300" x2="112" y2="356" stroke="#1fff52" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="22" y="360" width="240" height="52" rx="10" fill="#0f1a10" stroke="#1fff52" stroke-width="1.2"/>
+  <text x="142" y="382" fill="#cfeccf" font-size="12" text-anchor="middle">paste → frontmost app</text>
+  <text x="142" y="400" fill="#5a7a5f" font-size="10" text-anchor="middle">CGEvent Cmd+V (any app)</text>
+
+  <!-- autosend -->
+  <rect x="300" y="360" width="458" height="52" rx="10" fill="#0d130d" stroke="#5a7a5f" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <text x="529" y="382" fill="#cfeccf" font-size="12" text-anchor="middle">autosend.py  (optional, standalone)</text>
+  <text x="529" y="400" fill="#5a7a5f" font-size="10" text-anchor="middle">armed one-shot ⌘⇧Space → presses Return once typing settles · window-locked</text>
+</svg>

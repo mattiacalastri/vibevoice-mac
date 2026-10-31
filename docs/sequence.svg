@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 360" font-family="ui-monospace,SFMono-Regular,Menlo,monospace">
+  <defs>
+    <marker id="a3" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#1fff52"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="780" height="360" rx="16" fill="#0a0e0a"/>
+  <text x="32" y="42" fill="#1fff52" font-size="20" font-weight="bold">VibeVoice — one dictation, end to end</text>
+  <text x="32" y="66" fill="#5a7a5f" font-size="13">Hands stay on the keyboard. Speak → it lands where the cursor is.</text>
+
+  <!-- timeline spine -->
+  <line x1="60" y1="150" x2="720" y2="150" stroke="#2a3a2c" stroke-width="2"/>
+
+  <!-- step nodes -->
+  <!-- 1 speak -->
+  <circle cx="90" cy="150" r="9" fill="#1fff52"/>
+  <text x="90" y="120" fill="#cfeccf" font-size="13" text-anchor="middle" font-weight="bold">1 · speak</text>
+  <text x="90" y="180" fill="#5a7a5f" font-size="10" text-anchor="middle">🎤 mic</text>
+  <text x="90" y="194" fill="#5a7a5f" font-size="10" text-anchor="middle">capture</text>
+
+  <line x1="99" y1="150" x2="171" y2="150" stroke="#1fff52" stroke-width="2" marker-end="url(#a3)"/>
+
+  <!-- 2 VAD -->
+  <circle cx="200" cy="150" r="9" fill="#1fff52"/>
+  <text x="200" y="120" fill="#cfeccf" font-size="13" text-anchor="middle" font-weight="bold">2 · onset</text>
+  <text x="200" y="180" fill="#5a7a5f" font-size="10" text-anchor="middle">VAD fires</text>
+  <text x="200" y="194" fill="#5a7a5f" font-size="10" text-anchor="middle">pill appears</text>
+
+  <line x1="209" y1="150" x2="281" y2="150" stroke="#1fff52" stroke-width="2" marker-end="url(#a3)"/>
+
+  <!-- 3 record -->
+  <circle cx="310" cy="150" r="9" fill="#1fff52"/>
+  <text x="310" y="120" fill="#cfeccf" font-size="13" text-anchor="middle" font-weight="bold">3 · record</text>
+  <text x="310" y="180" fill="#5a7a5f" font-size="10" text-anchor="middle">waveform</text>
+  <text x="310" y="194" fill="#5a7a5f" font-size="10" text-anchor="middle">streams live</text>
+
+  <line x1="319" y1="150" x2="391" y2="150" stroke="#1fff52" stroke-width="2" marker-end="url(#a3)"/>
+
+  <!-- 4 silence -->
+  <circle cx="420" cy="150" r="9" fill="#1fff52"/>
+  <text x="420" y="120" fill="#cfeccf" font-size="13" text-anchor="middle" font-weight="bold">4 · silence</text>
+  <text x="420" y="180" fill="#5a7a5f" font-size="10" text-anchor="middle">1.5s quiet</text>
+  <text x="420" y="194" fill="#5a7a5f" font-size="10" text-anchor="middle">finalize</text>
+
+  <line x1="429" y1="150" x2="501" y2="150" stroke="#1fff52" stroke-width="2" marker-end="url(#a3)"/>
+
+  <!-- 5 transcribe -->
+  <circle cx="530" cy="150" r="9" fill="#1fff52"/>
+  <text x="530" y="120" fill="#cfeccf" font-size="13" text-anchor="middle" font-weight="bold">5 · whisper</text>
+  <text x="530" y="180" fill="#5a7a5f" font-size="10" text-anchor="middle">local STT</text>
+  <text x="530" y="194" fill="#5a7a5f" font-size="10" text-anchor="middle">→ raw.txt</text>
+
+  <line x1="539" y1="150" x2="611" y2="150" stroke="#1fff52" stroke-width="2" marker-end="url(#a3)"/>
+
+  <!-- 6 paste -->
+  <circle cx="640" cy="150" r="9" fill="#1fff52"/>
+  <text x="640" y="120" fill="#cfeccf" font-size="13" text-anchor="middle" font-weight="bold">6 · paste</text>
+  <text x="640" y="180" fill="#5a7a5f" font-size="10" text-anchor="middle">Cmd+V into</text>
+  <text x="640" y="194" fill="#5a7a5f" font-size="10" text-anchor="middle">frontmost</text>
+
+  <line x1="649" y1="150" x2="691" y2="150" stroke="#1fff52" stroke-width="2" marker-end="url(#a3)"/>
+
+  <!-- 7 return -->
+  <circle cx="710" cy="150" r="9" fill="none" stroke="#1fff52" stroke-width="2"/>
+  <text x="710" y="120" fill="#9fd3a4" font-size="13" text-anchor="middle" font-weight="bold">7 · ⏎</text>
+  <text x="710" y="180" fill="#5a7a5f" font-size="10" text-anchor="middle">optional</text>
+  <text x="710" y="194" fill="#5a7a5f" font-size="10" text-anchor="middle">fires prompt</text>
+
+  <!-- local badge -->
+  <rect x="240" y="250" width="300" height="58" rx="12" fill="#0f1a10" stroke="#1fff52" stroke-width="1.2"/>
+  <text x="390" y="276" fill="#1fff52" font-size="13" text-anchor="middle" font-weight="bold">🔒 100% local</text>
+  <text x="390" y="296" fill="#9fd3a4" font-size="11" text-anchor="middle">whisper runs on-device (Apple Silicon) — no audio leaves the Mac</text>
+</svg>
