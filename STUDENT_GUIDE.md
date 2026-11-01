@@ -18,7 +18,7 @@ the demo or for studying the engine.
 
 ```bash
 git clone https://github.com/mattiacalastri/vibevoice-mac.git
-cd vibevoice
+cd vibevoice-mac
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip

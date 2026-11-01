@@ -81,7 +81,9 @@ Born for **Claude Code**, but it types into *any* frontmost app.
   notch round the screen while you talk. If the text can't land, a «Copia» card
   keeps it.
 - **Mic open only when used.** Pressed: the capture resumes in ~60 ms. Released:
-  it pauses two seconds later and the orange mic indicator goes out.
+  it pauses two seconds later and the orange mic indicator goes out. Between
+  dictations the built-in mic stays fully usable by other apps (Meet, a
+  wake-word listener): push-to-talk never holds it in voice-processing mode.
 - **Menu-bar menu.** Pausa dettatura · Invio automatico (Return after every
   dictation) · Copia l'ultima dettatura · Impostazioni · Riavvia · Esci.
 - **Loop guard.** Whisper fills a silent tail with repetitions («Where will we
@@ -90,6 +92,8 @@ Born for **Claude Code**, but it types into *any* frontmost app.
   an inline correction tool keeps it honest with a real corpus behind it.
 - **Private by construction.** Transcription runs on-device via MLX on Apple
   Silicon. There is no server, no account, no telemetry. Audio never leaves your Mac.
+  The one exception is opt-in: `VIBEVOICE_CLEANUP=1` sends the *text* (never the
+  audio) to an LLM endpoint you configure for a punctuation and filler pass.
 
 <p align="center">
   <img src="docs/sequence.svg" alt="VibeVoice end to end: speak, VAD onset, record, silence, whisper, paste, optional Return" width="760">
@@ -119,13 +123,14 @@ is the one the tests now defend. See `tests/test_contract.py` for the receipts.
 Grab **[`VibeVoice.dmg`](https://mattiacalastri.com/vibevoice-download/)**,
 drag to Applications, double-click. Signed and notarized by Apple — no
 Gatekeeper warnings. The bundle is self-contained: it embeds Python and the
-MLX Whisper runtime.
+MLX Whisper runtime. The DMG is a tagged release (1.1.0); `main` can be ahead of
+it — build from source for the latest fixes.
 
 ### Option A — build the app from source
 
 ```bash
 git clone https://github.com/mattiacalastri/vibevoice-mac.git
-cd vibevoice
+cd vibevoice-mac
 pip3 install -r requirements.txt   # interpreter deps (the .app reuses your python3)
 ./build_app.sh                     # -> dist/VibeVoice.app
 open dist/VibeVoice.app            # first launch prompts for Microphone + Accessibility
@@ -134,13 +139,15 @@ open dist/VibeVoice.app            # first launch prompts for Microphone + Acces
 The bundle carries its own identity, so the permission prompts attach to
 *VibeVoice*, not to your terminal. It reuses your `python3` (small and fast to
 build); the release DMG is the fully self-contained variant
-(`bash packaging/build_release.sh`).
+(`bash packaging/build_release.sh`, then `bash packaging/sign_and_dmg.sh`
+with your own Developer ID; notarization uses the `notarytool` keychain profile
+named in `NOTARY_PROFILE`, default `vibevoice-notary`).
 
 ### Option B — run the scripts directly *(dev)*
 
 ```bash
 git clone https://github.com/mattiacalastri/vibevoice-mac.git
-cd vibevoice
+cd vibevoice-mac
 pip install -r requirements.txt
 python3 engine.py &      # mic capture + STT — writes state files
 python3 vibevoice.py &   # the pill — reads state files, draws in the notch
@@ -255,7 +262,11 @@ Environment variables, read by `engine.py`:
 | `VIBEVOICE_PTT` | `0` | `1` = push-to-talk: record exactly while <kbd>Control</kbd> is held (the app sets it from `ptt`, on by default). `0` = hands-free, a voice detector opens and closes each sentence. |
 | `VIBEVOICE_STREAMING` | `1` | `0` restores pure batch behaviour (no live draft). |
 | `VIBEVOICE_STREAM_PASTE` | `1` | `0` goes back to one atomic paste at the end. |
+| `VIBEVOICE_VP` | `1` | Hands-free capture via macOS voice processing (echo cancellation); `0` forces plain sounddevice. Push-to-talk always uses sounddevice. |
+| `VIBEVOICE_CLEANUP` | `0` | `1` enables the optional LLM cleanup pass on the text (needs `VIBEVOICE_CLEANUP_API_KEY`); any failure pastes the raw text. |
 | `VIBEVOICE_ENGINE_AUTOSTART` | `0` | Read by the **pill**: `1` makes it spawn the engine on launch. |
+
+The full list, tuning constants included, is in [AGENTS.md](AGENTS.md).
 
 ```bash
 # Example: English, copy-to-clipboard only, no auto-Return
@@ -271,6 +282,8 @@ VIBEVOICE_LANG=en VIBEVOICE_AUTOSEND=0 python3 engine.py
 | Auto-Return fires into the wrong window | Use the `autosend.py` daemon instead of `VIBEVOICE_AUTOSEND_RETURN` — it locks onto the window you dictated into. |
 | `autosend.py` does nothing | It's one-shot: arm it first with <kbd>⌘</kbd><kbd>⇧</kbd><kbd>Space</kbd> (*tink* + notification). It disarms after one send. |
 | Wrong language | Set `VIBEVOICE_LANG` (default is `it`). |
+| Push-to-talk types only «Grazie a tutti.» | Fixed on `main` (the audio callback now copies each block instead of keeping a view of a reused buffer). Update from source. |
+| Other apps hear near-silence from the mic between dictations | Fixed on `main`: push-to-talk captures via sounddevice. On older builds, `VIBEVOICE_VP=0` does the same. |
 | `ModuleNotFoundError: pynput` | `pip install pynput` — only needed for the optional daemon. |
 
 ## For students · For agents
@@ -294,8 +307,9 @@ enough to matter, and instrumented so every claim can be checked.
 
 ## Roadmap
 
-**v1.0** ships the full loop: capture → live transcription → typed text →
-auto-Return, packaged as a signed, notarized, self-contained app. Next:
+**v1.1** ships the full loop: push-to-talk on Control → live transcription in
+the notch → typed text → auto-Return, with the edge glow, packaged as a signed,
+notarized, self-contained app. Next:
 
 - [ ] In-pill language switcher
 - [ ] Configurable theme (beyond Matrix green)
