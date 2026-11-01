@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/hero.png" alt="VibeVoice — the live waveform pill in the notch, showing a transcription" width="640">
+  <img src="docs/hero.png" alt="VibeVoice while Control is held: the chip in the notch shows the live text, the screen edge glows, and the confirmed words are already typed in the terminal" width="820">
 </p>
 
 <p align="center">
@@ -80,6 +80,11 @@ Born for **Claude Code**, but it types into *any* frontmost app.
   dot (recording, transcribing, delivered) and a glow that runs out of the
   notch round the screen while you talk. If the text can't land, a «Copia» card
   keeps it.
+
+  <p align="center">
+    <img src="docs/notch_states.png" alt="The notch chip in its four states: recording with live text, transcribing, delivered, and the Copia card when the text could not be typed" width="760">
+  </p>
+
 - **Mic open only when used.** Pressed: the capture resumes in ~60 ms. Released:
   it pauses two seconds later and the orange mic indicator goes out. Between
   dictations the built-in mic stays fully usable by other apps (Meet, a
@@ -96,7 +101,7 @@ Born for **Claude Code**, but it types into *any* frontmost app.
   audio) to an LLM endpoint you configure for a punctuation and filler pass.
 
 <p align="center">
-  <img src="docs/sequence.svg" alt="VibeVoice end to end: speak, VAD onset, record, silence, whisper, paste, optional Return" width="760">
+  <img src="docs/sequence.svg" alt="VibeVoice end to end: hold Control, record, live text in the notch, words typed as you speak, let go, last words pasted, optional Return" width="760">
 </p>
 
 ## The numbers
@@ -171,6 +176,10 @@ python3 vibevoice.py --place    # placement mode: pill stays visible while you p
 </p>
 <p align="center"><sub>The pill in <code>--demo</code> mode — a fixed sample line, not live dictation.</sub></p>
 
+The README screenshots are rendered by `python3 tools/readme_images.py` from the
+app's own drawing code (the chip view, the glow's ring path and palette) over a
+mock desktop — no real screen is captured.
+
 ## Architecture
 
 Three processes that **never import each other**. The only contract between
@@ -178,7 +187,7 @@ them is a handful of small files under `~/.vibevoice/` — that's the crash
 isolation, and it's also the extension seam.
 
 <p align="center">
-  <img src="docs/architecture.svg" alt="VibeVoice data flow: mic into engine.py; engine writes state files under ~/.vibevoice; the pill reads them and draws under the notch; engine pastes into the frontmost app; an optional autosend daemon presses Return" width="780">
+  <img src="docs/architecture.svg" alt="VibeVoice data flow: mic into engine.py; engine writes state files under ~/.vibevoice; vibevoice.py reads them, draws the notch chip and edge glow, and writes the ptt file while Control is held; engine types into the frontmost app; an optional autosend daemon presses Return" width="780">
 </p>
 
 - **`engine.py`** — captures the mic, runs VAD + Whisper, **writes** the state files, types the text.
@@ -204,7 +213,7 @@ Because the seam is just files, you can **bring your own engine**: swap
 <summary><strong>Engine state machine</strong></summary>
 
 <p align="center">
-  <img src="docs/state-machine.svg" alt="Engine state machine: idle to recording on voice onset, recording to transcribing after trailing silence or max length, then back to idle once the text is pasted" width="780">
+  <img src="docs/state-machine.svg" alt="Engine state machine: idle to recording while Control is held, recording to transcribing on release, then back to idle once the text is typed" width="780">
 </p>
 
 </details>
