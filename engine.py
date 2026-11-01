@@ -1902,7 +1902,15 @@ def _select_capture_backend() -> type:
     full-duplex prerequisite) unless VIBEVOICE_VP=0 or AVFoundation is not
     importable. Failures later, at open time (mic permission, API errors),
     fall back to sounddevice inside Engine.run().
+
+    Push-to-talk always takes sounddevice: its engine stays paused between
+    dictations, and a paused voice-processing engine keeps the built-in mic
+    in voice-processing mode, so every other app reads near-silence from it
+    (measured 2026-10-31: peak 0.004 instead of 1.6 in another process — a
+    wake-word listener, Meet, anything). A paused sounddevice stream does not.
     """
+    if PTT:
+        return _SounddeviceCapture
     if VP_ENABLED and _ensure_avfoundation():
         return _VoiceProcessingCapture
     return _SounddeviceCapture
@@ -2355,7 +2363,9 @@ class Engine:
                 return
             self._was_muted = False
 
-            block = np.ascontiguousarray(indata[:, 0], dtype=np.float32)
+            # A copy, never a view: sounddevice reuses `indata` for every block,
+            # so a stored view turns the whole utterance into its last block.
+            block = np.array(indata[:, 0], dtype=np.float32, copy=True)
             rms = float(np.sqrt(np.mean(block ** 2))) if block.size else 0.0
             now = time.monotonic()
             # The speech DECISION comes from the decider: feed + flag read are

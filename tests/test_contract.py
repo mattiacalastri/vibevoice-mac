@@ -241,6 +241,19 @@ def test_unmuted_engine_starts_recording_on_speech(engine_state):
     assert engine.STATE_FILE.read_text() == "recording"
 
 
+def test_captured_blocks_survive_reused_callback_buffer(engine_state):
+    """sounddevice hands the callback the SAME buffer every block. A stored
+    block that is a view of it becomes the last block of the utterance — the
+    silence at release — and Whisper answers «Grazie a tutti.» (measured
+    2026-11-01: levels showed speech, every push-to-talk dictation dropped)."""
+    eng = engine.Engine()
+    shared = np.full((engine.BLOCKSIZE, 1), 0.5, dtype=np.float32)
+    eng._audio_callback(shared, engine.BLOCKSIZE, None, None)
+    assert eng._speaking is True
+    shared[:] = 0.0   # PortAudio overwrites the buffer with the next block
+    assert float(np.abs(eng._buf[-1]).max()) == pytest.approx(0.5)
+
+
 # ── Capture backend seam (F1: voice-processing capture + sounddevice fallback) ─
 
 def test_capture_backend_falls_back_without_avfoundation(monkeypatch):
@@ -255,10 +268,22 @@ def test_capture_backend_falls_back_without_avfoundation(monkeypatch):
 def test_capture_backend_prefers_voice_processing(monkeypatch):
     """AVFoundation available + VIBEVOICE_VP on → voice-processing is selected."""
     monkeypatch.setattr(engine, "VP_ENABLED", True)
+    monkeypatch.setattr(engine, "PTT", False)
     monkeypatch.setattr(engine, "_ensure_avfoundation", lambda: True)
     backend = engine._select_capture_backend()
     assert backend is engine._VoiceProcessingCapture
     assert backend.name == "voice-processing"
+
+
+def test_push_to_talk_never_selects_voice_processing(monkeypatch):
+    """Push-to-talk keeps its engine paused between dictations, and a paused
+    voice-processing engine silences the built-in mic for every other app
+    (measured 2026-10-31: peak 0.004 instead of 1.6 in another process, a
+    wake-word listener heard nothing). So push-to-talk captures via sounddevice."""
+    monkeypatch.setattr(engine, "VP_ENABLED", True)
+    monkeypatch.setattr(engine, "PTT", True)
+    monkeypatch.setattr(engine, "_ensure_avfoundation", lambda: True)
+    assert engine._select_capture_backend() is engine._SounddeviceCapture
 
 
 def test_vp_env_kill_switch_forces_sounddevice(monkeypatch):
