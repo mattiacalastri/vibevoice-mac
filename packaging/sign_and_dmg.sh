@@ -9,7 +9,7 @@ cd "$(dirname "$0")/.."
 APP="packaging/dist/VibeVoice.app"
 DMG="packaging/dist/VibeVoice.dmg"
 IDENTITY="Developer ID Application: MATTIA CALASTRI (54582KN4KW)"
-NOTARY_PROFILE="${NOTARY_PROFILE:-polpo-notary}"
+NOTARY_PROFILE="${NOTARY_PROFILE:-vibevoice-notary}"
 test -d "$APP" || { echo "missing $APP — run packaging/build_release.sh first"; exit 1; }
 
 ENTITLEMENTS="$(mktemp -t vibevoice-entitlements).plist"

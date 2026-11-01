@@ -94,10 +94,11 @@ codesign --force --timestamp --sign "$IDENTITY" "$DMG"
 echo "  DMG signed:"; du -sh "$DMG"
 
 echo "── notarize (needs the one-time app-specific password profile) ──"
-if xcrun notarytool history --keychain-profile polpo-notary >/dev/null 2>&1; then
-  xcrun notarytool submit "$DMG" --keychain-profile polpo-notary --wait
+NOTARY_PROFILE="${NOTARY_PROFILE:-vibevoice-notary}"
+if xcrun notarytool history --keychain-profile "$NOTARY_PROFILE" >/dev/null 2>&1; then
+  xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait
   xcrun stapler staple "$APP" && xcrun stapler staple "$DMG" && echo "  notarized + stapled"
 else
-  echo "  notarytool profile 'polpo-notary' missing — skipping (see gesture #3)."
+  echo "  notarytool profile '$NOTARY_PROFILE' missing — skipping (see packaging/sign_and_dmg.sh for store-credentials)."
 fi
 echo "DONE → $DMG"
