@@ -1083,7 +1083,7 @@ _CONNECTOR = r"(?:e|ed|poi|infine|and|then|finally)"
 _ITEM_START = rf"(?:^|[.!?;:,]\s+(?:{_CONNECTOR}\s+)?|\s+{_CONNECTOR}\s+)"
 _ORDINAL_MARK = re.compile(
     _ITEM_START
-    # «in primo luogo», «come secondo punto» (how Mattia restates an item)
+    # «in primo luogo», «come secondo punto» (how a speaker restates an item)
     + r"(?:in\s+|come\s+|as\s+)?(?:(?:la|il|lo|the)\s+)?"
     + rf"(?P<ord>{'|'.join(_ORDINALS)})"
     # The word after the ordinal is what makes it a marker: «la prima è…»,

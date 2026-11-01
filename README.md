@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/mattiacalastri/vibevoice-mac/actions/workflows/ci.yml"><img src="https://github.com/mattiacalastri/vibevoice-mac/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://mattiacalastri.com/vibevoice-download/"><img src="https://img.shields.io/badge/download-1.1.0-00d26a" alt="Download VibeVoice 1.1.0"></a>
+  <a href="https://mattiacalastri.com/vibevoice-download/"><img src="https://img.shields.io/badge/download-1.1.1-00d26a" alt="Download VibeVoice 1.1.1"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/platform-macOS%2012%2B-black?logo=apple" alt="macOS 12+">
   <img src="https://img.shields.io/badge/STT-whisper--turbo%20·%20on--device-9cf" alt="whisper-turbo, on-device">
@@ -128,8 +128,8 @@ is the one the tests now defend. See `tests/test_contract.py` for the receipts.
 Grab **[`VibeVoice.dmg`](https://mattiacalastri.com/vibevoice-download/)**,
 drag to Applications, double-click. Signed and notarized by Apple — no
 Gatekeeper warnings. The bundle is self-contained: it embeds Python and the
-MLX Whisper runtime. The DMG is a tagged release (1.1.0); `main` can be ahead of
-it — build from source for the latest fixes.
+MLX Whisper runtime. The DMG is a tagged release (1.1.1); `main` can be ahead of
+it — build from source for the very latest.
 
 ### Option A — build the app from source
 
@@ -291,8 +291,8 @@ VIBEVOICE_LANG=en VIBEVOICE_AUTOSEND=0 python3 engine.py
 | Auto-Return fires into the wrong window | Use the `autosend.py` daemon instead of `VIBEVOICE_AUTOSEND_RETURN` — it locks onto the window you dictated into. |
 | `autosend.py` does nothing | It's one-shot: arm it first with <kbd>⌘</kbd><kbd>⇧</kbd><kbd>Space</kbd> (*tink* + notification). It disarms after one send. |
 | Wrong language | Set `VIBEVOICE_LANG` (default is `it`). |
-| Push-to-talk types only «Grazie a tutti.» | Fixed on `main` (the audio callback now copies each block instead of keeping a view of a reused buffer). Update from source. |
-| Other apps hear near-silence from the mic between dictations | Fixed on `main`: push-to-talk captures via sounddevice. On older builds, `VIBEVOICE_VP=0` does the same. |
+| Push-to-talk types only «Grazie a tutti.» | Fixed in 1.1.1 (the audio callback now copies each block instead of keeping a view of a reused buffer). Download the new DMG. |
+| Other apps hear near-silence from the mic between dictations | Fixed in 1.1.1: push-to-talk captures via sounddevice. On older builds, `VIBEVOICE_VP=0` does the same. |
 | `ModuleNotFoundError: pynput` | `pip install pynput` — only needed for the optional daemon. |
 
 ## For students · For agents
@@ -316,7 +316,7 @@ enough to matter, and instrumented so every claim can be checked.
 
 ## Roadmap
 
-**v1.1** ships the full loop: push-to-talk on Control → live transcription in
+**v1.1.1** ships the full loop: push-to-talk on Control → live transcription in
 the notch → typed text → auto-Return, with the edge glow, packaged as a signed,
 notarized, self-contained app. Next:
 
